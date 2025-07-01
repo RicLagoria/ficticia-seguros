@@ -18,8 +18,17 @@ function App() {
     }, [autenticado]);
 
     const handleGuardar = (persona) => {
-        const action = persona.id ? actualizarPersona : crearPersona;
-        action(persona).then(cargarPersonas);
+        const request = persona.id
+            ? actualizarPersona(persona.id, persona)
+            : crearPersona(persona);
+
+        request
+            .then(cargarPersonas)
+            .catch(err => {
+                console.error("Error al guardar:", err);
+                alert("Hubo un error al guardar la persona. Revisá los datos.");
+            });
+
         setPersonaParaEditar(null);
     };
 
