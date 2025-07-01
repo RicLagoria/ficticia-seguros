@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",               // login/register
                                 "/swagger",               // path personalizado de Swagger UI
+                                "/swagger/**",            // path personalizado de Swagger UI
                                 "/swagger-ui.html",       // fallback tradicional
                                 "/swagger-ui/**",         // assets JS/CSS de Swagger
                                 "/v3/api-docs/**"         // documentación OpenAPI

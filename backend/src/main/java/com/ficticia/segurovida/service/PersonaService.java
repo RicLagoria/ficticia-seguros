@@ -106,7 +106,7 @@ public class PersonaService {
                 .maneja(dto.getManeja())
                 .usaLentes(dto.getUsaLentes())
                 .diabetico(dto.getDiabetico())
-                .enfermedades(new ArrayList<>()) // Inicializar
+                .enfermedades(new ArrayList<>())
                 .build();
 
         vincularEnfermedades(persona, dto.getEnfermedades());
