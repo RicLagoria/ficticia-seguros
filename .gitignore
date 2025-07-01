@@ -11,3 +11,5 @@
 # General
 *.log
 *.DS_Store
+.env
+.vscode/
