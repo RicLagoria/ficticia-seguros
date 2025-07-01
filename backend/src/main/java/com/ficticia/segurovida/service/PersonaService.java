@@ -2,11 +2,15 @@ package com.ficticia.segurovida.service;
 
 import com.ficticia.segurovida.dto.PersonaRequestDTO;
 import com.ficticia.segurovida.dto.PersonaResponseDTO;
+import com.ficticia.segurovida.model.Enfermedad;
 import com.ficticia.segurovida.model.Persona;
 import com.ficticia.segurovida.repository.PersonaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import com.ficticia.segurovida.dto.EnfermedadDTO;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,6 +25,7 @@ public class PersonaService {
     public PersonaResponseDTO crearPersona(PersonaRequestDTO dto) {
         Persona persona = toEntity(dto);
         validarDatos(persona);
+        vincularEnfermedades(persona, dto.getEnfermedades());
         return toDTO(repository.save(persona));
     }
 
@@ -35,9 +40,23 @@ public class PersonaService {
         existente.setManeja(dto.getManeja());
         existente.setUsaLentes(dto.getUsaLentes());
         existente.setDiabetico(dto.getDiabetico());
-        existente.setOtraEnfermedad(dto.getOtraEnfermedad());
+
+        // Limpiar enfermedades anteriores
+        existente.getEnfermedades().clear();
+        vincularEnfermedades(existente, dto.getEnfermedades());
 
         return toDTO(repository.save(existente));
+    }
+
+    private void vincularEnfermedades(Persona persona, List<EnfermedadDTO> enfermedades) {
+        if (enfermedades != null) {
+            for (EnfermedadDTO dto : enfermedades) {
+                Enfermedad enfermedad = new Enfermedad();
+                enfermedad.setNombre(dto.getNombre());
+                enfermedad.setPersona(persona);
+                persona.getEnfermedades().add(enfermedad);
+            }
+        }
     }
 
     public void eliminarPersona(Long id) {
@@ -78,7 +97,7 @@ public class PersonaService {
     }
 
     private Persona toEntity(PersonaRequestDTO dto) {
-        return Persona.builder()
+        Persona persona = Persona.builder()
                 .nombreCompleto(dto.getNombreCompleto())
                 .identificacion(dto.getIdentificacion())
                 .edad(dto.getEdad())
@@ -87,8 +106,11 @@ public class PersonaService {
                 .maneja(dto.getManeja())
                 .usaLentes(dto.getUsaLentes())
                 .diabetico(dto.getDiabetico())
-                .otraEnfermedad(dto.getOtraEnfermedad())
+                .enfermedades(new ArrayList<>()) // Inicializar
                 .build();
+
+        vincularEnfermedades(persona, dto.getEnfermedades());
+        return persona;
     }
 
     private PersonaResponseDTO toDTO(Persona entity) {
@@ -102,7 +124,14 @@ public class PersonaService {
                 .maneja(entity.getManeja())
                 .usaLentes(entity.getUsaLentes())
                 .diabetico(entity.getDiabetico())
-                .otraEnfermedad(entity.getOtraEnfermedad())
+                .enfermedades(
+                        entity.getEnfermedades().stream()
+                                .map(e -> EnfermedadDTO.builder()
+                                        .id(e.getId())
+                                        .nombre(e.getNombre())
+                                        .build())
+                                .toList()
+                )
                 .build();
     }
 }

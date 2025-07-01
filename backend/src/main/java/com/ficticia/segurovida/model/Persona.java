@@ -3,6 +3,9 @@ package com.ficticia.segurovida.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "persona")
 @Data
@@ -34,6 +37,7 @@ public class Persona {
     private Boolean usaLentes;
     private Boolean diabetico;
 
-    @Column(name = "otra_enfermedad")
-    private String otraEnfermedad;
+    @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Enfermedad> enfermedades = new ArrayList<>();
+
 }

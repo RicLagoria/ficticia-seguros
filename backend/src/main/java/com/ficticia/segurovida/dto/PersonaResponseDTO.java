@@ -3,6 +3,8 @@ package com.ficticia.segurovida.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class PersonaResponseDTO {
@@ -15,5 +17,5 @@ public class PersonaResponseDTO {
     private Boolean maneja;
     private Boolean usaLentes;
     private Boolean diabetico;
-    private String otraEnfermedad;
+    private List<EnfermedadDTO> enfermedades;
 }
