@@ -24,7 +24,7 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("http://localhost:3000")); // TODO: ajustar en prod
+                    config.setAllowedOrigins(List.of("http://localhost:3000"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     config.setAllowedHeaders(List.of("*"));
                     config.setAllowCredentials(true);
@@ -33,14 +33,19 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/auth/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html",
-                                "/swagger-ui/**"
+                                "/auth/**",               // login/register
+                                "/swagger",               // path personalizado de Swagger UI
+                                "/swagger-ui.html",       // fallback tradicional
+                                "/swagger-ui/**",         // assets JS/CSS de Swagger
+                                "/v3/api-docs/**"         // documentación OpenAPI
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((req, res, ex) ->
+                                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No autorizado"))
+                )
                 .build();
     }
 }

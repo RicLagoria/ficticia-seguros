@@ -1,6 +1,5 @@
 # Backend
 /backend/target/
-/backend/.idea/
 /backend/.mvn/
 
 # Frontend
@@ -12,4 +11,5 @@
 *.log
 *.DS_Store
 .env
+/.idea/
 .vscode/
