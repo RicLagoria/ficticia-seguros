@@ -10,6 +10,6 @@ Sistema fullstack de gestión de personas para seguros de vida. Desarrollado com
 ## 🔧 Instrucciones para correr el proyecto
 
 ```bash
-git clone https://github.com/TU_USUARIO/ficticia-seguros.git
+git clone https://github.com/RicLagoria/ficticia-seguros.git
 cd ficticia-seguros
 docker compose up --build
