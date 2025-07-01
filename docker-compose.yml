@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: seguros-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: seguros
+    ports:
+      - "3307:3306"
+    command: >
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - seguros-net
+
+  backend:
+    build: ./backend
+    container_name: seguros-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    networks:
+      - seguros-net
+
+  frontend:
+    build: ./frontend
+    container_name: seguros-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - seguros-net
+
+volumes:
+  db_data:
+
+networks:
+  seguros-net:
+    driver: bridge
