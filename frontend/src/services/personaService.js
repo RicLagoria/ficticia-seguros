@@ -1,22 +1,24 @@
-import axios from 'axios';
-import { getToken } from './authService';
+// src/services/personaService.js
+import http from './http';
 
-const API_URL = 'http://localhost:8080/api/personas';
-//const API_URL ='/api/personas'
+const RESOURCE = '/personas';
 
+// Devuelven directamente el data para simplificar el uso desde los componentes
+export const getPersonas = async () => {
+    const { data } = await http.get(RESOURCE);
+    return data;
+};
 
-const axiosInstance = axios.create();
+export const crearPersona = async (persona) => {
+    const { data } = await http.post(RESOURCE, persona);
+    return data;
+};
 
-axiosInstance.interceptors.request.use(config => {
-    const token = getToken();
-    if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-});
+export const actualizarPersona = async (id, persona) => {
+    const { data } = await http.put(`${RESOURCE}/${id}`, persona);
+    return data;
+};
 
-export const getPersonas = () => axiosInstance.get(API_URL);
-export const crearPersona = (persona) => axiosInstance.post(API_URL, persona);
-export const actualizarPersona = (id, persona) => axiosInstance.put(`${API_URL}/${id}`, persona);
-export const eliminarPersona = (id) => axiosInstance.delete(`${API_URL}/${id}`);
-
+export const eliminarPersona = async (id) => {
+    await http.delete(`${RESOURCE}/${id}`);
+};

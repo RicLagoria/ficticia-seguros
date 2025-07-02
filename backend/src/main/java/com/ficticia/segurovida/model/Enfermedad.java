@@ -50,11 +50,11 @@ public class Enfermedad {
     }
 
 
-    @Override
-    public String toString() {
-        return "Enfermedad{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Enfermedad{" +
+//                "id=" + id +
+//                ", nombre='" + nombre + '\'' +
+//                '}';
+//    }
 }
