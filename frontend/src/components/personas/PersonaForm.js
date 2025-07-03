@@ -1,4 +1,5 @@
-// src/components/PersonaForm.js
+//src/components/personas/PersonaForm.js
+
 import React, { useState, useEffect } from 'react';
 
 const initialForm = {
@@ -13,7 +14,13 @@ const initialForm = {
     enfermedades: []
 };
 
-const PersonaForm = ({ onSubmit, personaParaEditar }) => {
+const PersonaForm = ({
+                         personaParaEditar,
+                         setPersonaParaEditar,
+                         crearPersona,
+                         actualizarPersona,
+                         cargarPersonas
+                     }) => {
     const [form, setForm] = useState(initialForm);
     const [errores, setErrores] = useState({});
     const [touched, setTouched] = useState({});
@@ -54,7 +61,7 @@ const PersonaForm = ({ onSubmit, personaParaEditar }) => {
         return Object.keys(nuevos).length === 0;
     };
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault();
         setTouched({
             nombreCompleto: true,
@@ -63,11 +70,26 @@ const PersonaForm = ({ onSubmit, personaParaEditar }) => {
             edad: true,
             enfermedades: true
         });
+
         if (!validarFormulario()) return;
-        onSubmit(form);
-        setForm(initialForm);
-        setErrores({});
-        setTouched({});
+
+        try {
+            if (form.id) {
+                await actualizarPersona(form.id, form); // ✅ ID separado
+            } else {
+                await crearPersona(form);
+            }
+
+            await cargarPersonas();
+
+            setForm(initialForm);
+            setErrores({});
+            setTouched({});
+            setPersonaParaEditar(null);
+        } catch (error) {
+            console.error('Error al guardar persona:', error);
+            alert('Ocurrió un error al guardar la persona. Intenta más tarde.');
+        }
     };
 
     const handleAddEnfermedad = () => {
@@ -94,10 +116,7 @@ const PersonaForm = ({ onSubmit, personaParaEditar }) => {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="login-box space-y-6"
-        >
+        <form onSubmit={handleSubmit} className="login-box space-y-6">
             <h2 className="text-2xl font-semibold text-center">
                 {form.id ? 'Editar' : 'Nueva'} Persona
             </h2>
@@ -124,9 +143,7 @@ const PersonaForm = ({ onSubmit, personaParaEditar }) => {
                             className="login-input"
                         />
                         <p className="h-4 text-sm text-red-600 mt-1">
-                            {touched[f.name] && errores[f.name]
-                                ? errores[f.name]
-                                : '\u00A0'}
+                            {touched[f.name] && errores[f.name] ? errores[f.name] : '\u00A0'}
                         </p>
                     </div>
                 ))}

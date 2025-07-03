@@ -1,7 +1,7 @@
 // src/components/LoginForm.js
 import React, { useState } from 'react';
-import { login } from '../services/authService';
-import logo from '../logo.svg';
+import { login } from '../../services/authService';
+import logo from '../../logo.svg';
 
 const LoginForm = ({ onLoginSuccess }) => {
     const [username, setUsername] = useState('');

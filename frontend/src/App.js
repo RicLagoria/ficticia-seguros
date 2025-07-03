@@ -1,15 +1,15 @@
 // src/App.js
 import React, { useEffect, useState } from 'react';
 import { isAuthenticated, logout } from './services/authService';
-import LoginForm from './components/LoginForm';
-import PersonaForm from './components/PersonaForm';
-import PersonaList from './components/PersonaList';
 import {
     getPersonas,
     crearPersona,
     actualizarPersona,
     eliminarPersona
 } from './services/personaService';
+
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
     const [personas, setPersonas] = useState([]);
@@ -25,91 +25,33 @@ function App() {
             const lista = await getPersonas();
             setPersonas(lista);
         } catch (err) {
-            console.error(err);
-            setError('No se pudieron cargar las personas.');
+            setError('Error al cargar personas');
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        if (autenticado) cargarPersonas();
+        if (autenticado) {
+            cargarPersonas();
+        }
     }, [autenticado]);
 
-    const handleGuardar = async (persona) => {
-        try {
-            if (persona.id) {
-                await actualizarPersona(persona.id, persona);
-            } else {
-                await crearPersona(persona);
-            }
-            await cargarPersonas();
-            setPersonaParaEditar(null);
-        } catch (err) {
-            console.error(err);
-            alert('Error al guardar la persona.');
-        }
-    };
-
-    const handleEliminar = async (id) => {
-        try {
-            await eliminarPersona(id);
-            await cargarPersonas();
-        } catch (err) {
-            console.error(err);
-            alert('Error al eliminar la persona.');
-        }
-    };
-
-    const handleLogout = () => {
-        logout();
-        setAutenticado(false);
-    };
-
-    if (!autenticado) {
-        return <LoginForm onLoginSuccess={() => setAutenticado(true)} />;
-    }
-
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
-            <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl p-8 space-y-6">
-                {/* Header */}
-                <header className="flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-gray-800">
-                        Gestión de Personas
-                    </h1>
-                    <button
-                        onClick={handleLogout}
-                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                    >
-                        Cerrar sesión
-                    </button>
-                </header>
-
-                {/* Formulario de Persona */}
-                <section>
-                    <PersonaForm
-                        onSubmit={handleGuardar}
-                        personaParaEditar={personaParaEditar}
-                    />
-                </section>
-
-                {/* Listado de Personas */}
-                <section className="space-y-4">
-                    {loading ? (
-                        <p className="text-center text-gray-600">Cargando personas…</p>
-                    ) : error ? (
-                        <p className="text-center text-red-600">{error}</p>
-                    ) : (
-                        <PersonaList
-                            personas={personas}
-                            onEdit={setPersonaParaEditar}
-                            onDelete={handleEliminar}
-                        />
-                    )}
-                </section>
-            </div>
-        </div>
+    return autenticado ? (
+        <DashboardPage
+            personas={personas}
+            setPersonas={setPersonas}
+            personaParaEditar={personaParaEditar}
+            setPersonaParaEditar={setPersonaParaEditar}
+            cargarPersonas={cargarPersonas}
+            eliminarPersona={eliminarPersona}
+            crearPersona={crearPersona}
+            actualizarPersona={actualizarPersona}
+            loading={loading}
+            error={error}
+        />
+    ) : (
+        <LoginPage onLoginSuccess={() => setAutenticado(true)} />
     );
 }
 
