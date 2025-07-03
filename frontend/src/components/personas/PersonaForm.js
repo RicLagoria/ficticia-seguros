@@ -116,7 +116,7 @@ const PersonaForm = ({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="login-box space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-none">
             <h2 className="text-2xl font-semibold text-center">
                 {form.id ? 'Editar' : 'Nueva'} Persona
             </h2>
@@ -140,7 +140,8 @@ const PersonaForm = ({
                             value={form[f.name]}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            className="login-input"
+                            className="w-full px-3 py-2 border border-primary rounded focus:outline-none focus:ring focus:border-blue-300"
+
                         />
                         <p className="h-4 text-sm text-red-600 mt-1">
                             {touched[f.name] && errores[f.name] ? errores[f.name] : '\u00A0'}
@@ -181,7 +182,7 @@ const PersonaForm = ({
                             onChange={e => handleEnfermedadChange(idx, e.target.value)}
                             onBlur={() => setTouched(prev => ({ ...prev, enfermedades: true }))}
                             placeholder={`#${idx + 1}`}
-                            className="login-input flex-1"
+                            className="w-full px-3 py-2 border border-primary rounded focus:outline-none focus:ring focus:border-blue-300"
                         />
                         <button
                             type="button"

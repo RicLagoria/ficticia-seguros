@@ -1,6 +1,7 @@
-// src/pages/DashboardPage.js
 import React from 'react';
-import PersonaPanel from '../components/personas/PersonaPanel';
+import MainLayout from '../components/layout/MainLayout';
+import PersonaList from '../components/personas/PersonaList';
+import PersonaForm from '../components/personas/PersonaForm';
 
 const DashboardPage = ({
                            personas,
@@ -12,23 +13,32 @@ const DashboardPage = ({
                            crearPersona,
                            actualizarPersona,
                            loading,
-                           error
+                           error,
+                           onLogout
                        }) => {
     return (
-        <div className="min-h-screen p-6 bg-gray-100">
-            <PersonaPanel
+        <MainLayout
+            formPanel={
+                <PersonaForm
+                    personaParaEditar={personaParaEditar}
+                    setPersonaParaEditar={setPersonaParaEditar}
+                    crearPersona={crearPersona}
+                    actualizarPersona={actualizarPersona}
+                    cargarPersonas={cargarPersonas}
+                />
+            }
+            onLogout={onLogout}
+        >
+            <PersonaList
                 personas={personas}
                 setPersonas={setPersonas}
-                personaParaEditar={personaParaEditar}
                 setPersonaParaEditar={setPersonaParaEditar}
-                cargarPersonas={cargarPersonas}
                 eliminarPersona={eliminarPersona}
-                crearPersona={crearPersona}
-                actualizarPersona={actualizarPersona}
+                cargarPersonas={cargarPersonas}
                 loading={loading}
                 error={error}
             />
-        </div>
+        </MainLayout>
     );
 };
 

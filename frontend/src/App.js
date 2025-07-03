@@ -1,5 +1,6 @@
-// src/App.js
 import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 import { isAuthenticated, logout } from './services/authService';
 import {
     getPersonas,
@@ -12,9 +13,9 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 
 function App() {
+    const [autenticado, setAutenticado] = useState(isAuthenticated());
     const [personas, setPersonas] = useState([]);
     const [personaParaEditar, setPersonaParaEditar] = useState(null);
-    const [autenticado, setAutenticado] = useState(isAuthenticated());
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -37,21 +38,54 @@ function App() {
         }
     }, [autenticado]);
 
-    return autenticado ? (
-        <DashboardPage
-            personas={personas}
-            setPersonas={setPersonas}
-            personaParaEditar={personaParaEditar}
-            setPersonaParaEditar={setPersonaParaEditar}
-            cargarPersonas={cargarPersonas}
-            eliminarPersona={eliminarPersona}
-            crearPersona={crearPersona}
-            actualizarPersona={actualizarPersona}
-            loading={loading}
-            error={error}
-        />
-    ) : (
-        <LoginPage onLoginSuccess={() => setAutenticado(true)} />
+    const handleLogout = () => {
+        logout();
+        setAutenticado(false);
+    };
+
+    const dashboardProps = {
+        personas,
+        setPersonas,
+        personaParaEditar,
+        setPersonaParaEditar,
+        cargarPersonas,
+        eliminarPersona,
+        crearPersona,
+        actualizarPersona,
+        loading,
+        error,
+        onLogout: handleLogout
+    };
+
+    return (
+        <Router>
+            <Routes>
+                <Route
+                    path="/login"
+                    element={
+                        autenticado
+                            ? <Navigate to="/dashboard" />
+                            : <LoginPage onLoginSuccess={() => setAutenticado(true)} />
+                    }
+                />
+                <Route
+                    path="/dashboard"
+                    element={
+                        autenticado
+                            ? <DashboardPage {...dashboardProps} />
+                            : <Navigate to="/login" />
+                    }
+                />
+                <Route
+                    path="/"
+                    element={
+                        autenticado
+                            ? <Navigate to="/dashboard" />
+                            : <Navigate to="/login" />
+                    }
+                />
+            </Routes>
+        </Router>
     );
 }
 

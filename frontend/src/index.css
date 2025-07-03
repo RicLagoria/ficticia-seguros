@@ -1,30 +1,32 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --color-primary: #4B4CE0;
   --color-panel-bg: #EEF1FF;
-  --color-bg: #4B4CE0;
-  --color-text: #4B4CE0;
+  --color-bg: #F8FAFC;
   --font-sans: 'Inter', sans-serif;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  background-color: var(--color-bg);
-  font-family: var(--font-sans);
-  color: var(--color-text);
+  font-family: var(--font-sans), sans-serif;
   line-height: 1.5;
   min-height: 100vh;
+  background-color: #f1f5f9;
+  color: #111827;
 }
 
-a {
-  color: var(--color-primary);
-  text-decoration: none;
+.grid-cols-layout {
+  display: grid;
+  grid-template-columns: 250px 1fr 2fr;
 }
 
-button, input, select, textarea {
-  font-family: inherit;
+.login-input {
+  @apply w-full border border-blue-300 rounded px-3 py-2 outline-none;
+}
+
+.login-box {
+  @apply max-w-lg mx-auto bg-white p-8 rounded shadow;
 }
